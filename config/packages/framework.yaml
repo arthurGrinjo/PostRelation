@@ -1,0 +1,21 @@
+# see https://symfony.com/doc/current/reference/configuration/framework.html
+framework:
+    secret: '%env(APP_SECRET)%'
+
+    # Note that the session will be started ONLY if you read or write from it.
+    session: true
+    serializer:
+        name_converter: 'serializer.name_converter.snake_case_to_camel_case'
+
+    http_client:
+        scoped_clients:
+            strava.client:
+                base-uri: https://www.strava.com/api/v3/
+                scope: https://www.strava.com/api/
+                auth_bearer: the-bearer-token
+
+when@test:
+    framework:
+        test: true
+        session:
+            storage_factory_id: session.storage.factory.mock_file

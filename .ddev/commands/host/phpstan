@@ -1,0 +1,7 @@
+#!/bin/bash
+
+## Description: run PHPStan
+## Usage: phpstan
+## Example: ddev phpstan <path-to-files>
+
+ddev exec phpstan analyze -c phpstan.dist.neon "$@"

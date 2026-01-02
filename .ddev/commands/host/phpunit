@@ -1,0 +1,7 @@
+#!/bin/bash
+
+## Description: run PHPUnit
+## Usage: phpunit
+## Example: ddev phpunit <path-to-files>
+
+ddev php bin/phpunit --do-not-fail-on-deprecation "$@"

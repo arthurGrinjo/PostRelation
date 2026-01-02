@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+## Description: Open PhpStorm with the current project
+## Usage: phpstorm
+## Example: "ddev phpstorm"
+## OSTypes: darwin
+## HostBinaryExists: "/Applications/PhpStorm.app"
+
+# Example is macOS-specific, but easy to adapt to any OS
+open -a PhpStorm.app ${DDEV_APPROOT}
