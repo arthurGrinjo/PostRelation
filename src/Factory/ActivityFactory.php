@@ -29,4 +29,9 @@ final class ActivityFactory extends PersistentObjectFactory
             'user' => repository(User::class)->random(),
         ];
     }
+
+    protected function initialize(): static
+    {
+        return $this->afterPersist(function(Activity $activity) {})->andPersist();
+    }
 }
