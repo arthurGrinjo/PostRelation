@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Dto\Interface\ResponseDto;
 use App\Dto\User\Response\UserResponseDto;
 use App\Entity\Activity as ActivityEntity;
+use App\Entity\User;
 use Symfony\Component\ObjectMapper\Attribute\Map;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -30,6 +31,7 @@ final readonly class ActivityCollectionResponseDto implements ResponseDto
 
         #[Assert\NotBlank]
         #[ApiProperty(readableLink: false)]
+//        #[Map(source: 'User')]
         public UserResponseDto $user,
     ) {}
 }

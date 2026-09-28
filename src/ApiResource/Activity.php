@@ -24,6 +24,7 @@ use App\Validation\RegexValidations;
 )]
 #[GetCollection(
     uriTemplate: 'activities',
+    input: ActivityEntity::class,
     output: ActivityCollectionResponseDto::class,
 )]
 #[Get(
