@@ -112,7 +112,13 @@ class ActivityTest extends ApiTestCase
             '@id' => $item['@id'],
             '@type' => 'activity',
             'name' => 'Nieuwe activiteit',
-            'user' => '/api/users/' . $user->getUuid(),
+            'user' => [
+                '@id' => '/api/users/' . $user->getUuid(),
+                '@type' => 'user',
+                'email' => $user->getEmail(),
+                'first_name' => $user->getFirstName(),
+                'last_name' => $user->getLastName(),
+            ]
         ]);
     }
 }

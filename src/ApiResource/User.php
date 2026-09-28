@@ -6,7 +6,6 @@ namespace App\ApiResource;
 
 use ApiPlatform\Doctrine\Orm\Filter\PartialSearchFilter;
 use ApiPlatform\Doctrine\Orm\State\Options;
-use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -20,13 +19,11 @@ use App\Entity\User as UserEntity;
 use App\Processor\StandardProcessor;
 use App\Validation\RegexValidations;
 
-#[ApiResource(
-    shortName: 'user',
-    stateOptions: new Options(entityClass: UserEntity::class),
-)]
 #[GetCollection(
     uriTemplate: 'users',
+    shortName: 'user',
     output: UserCollectionResponseDto::class,
+    stateOptions: new Options(entityClass: UserEntity::class),
     parameters: [
         'email' => new QueryParameter(filter: new PartialSearchFilter(), property: 'email'),
         'first_name' => new QueryParameter(filter: new PartialSearchFilter(), property: 'firstName'),
@@ -41,13 +38,17 @@ use App\Validation\RegexValidations;
     requirements: [
         'uuid' => RegexValidations::REGEX_UUID,
     ],
+    shortName: 'user',
     output: UserResponseDto::class,
+    stateOptions: new Options(entityClass: UserEntity::class),
 )]
 #[Post(
     uriTemplate: 'users',
+    shortName: 'user',
     input: UserRequestDto::class,
     output: UserResponseDto::class,
     processor: StandardProcessor::class,
+    stateOptions: new Options(entityClass: UserEntity::class),
     map: false,
 )]
 //#[Put(

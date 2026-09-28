@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\ApiResource;
 
 use ApiPlatform\Doctrine\Orm\State\Options;
-use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -18,13 +17,12 @@ use App\Entity\Activity as ActivityEntity;
 use App\Processor\StandardProcessor;
 use App\Validation\RegexValidations;
 
-#[ApiResource(
-    shortName: 'activity',
-    stateOptions: new Options(entityClass: ActivityEntity::class),
-)]
 #[GetCollection(
     uriTemplate: 'activities',
+    shortName: 'activity',
+    input: ActivityEntity::class,
     output: ActivityCollectionResponseDto::class,
+    stateOptions: new Options(entityClass: ActivityEntity::class),
 )]
 #[Get(
     uriTemplate: 'activities/{uuid}',
@@ -34,13 +32,17 @@ use App\Validation\RegexValidations;
     requirements: [
         'uuid' => RegexValidations::REGEX_UUID,
     ],
+    shortName: 'activity',
     output: ActivityResponseDto::class,
+    stateOptions: new Options(entityClass: ActivityEntity::class),
 )]
 #[Post(
     uriTemplate: 'activities',
+    shortName: 'activity',
     input: ActivityRequestDto::class,
     output: ActivityResponseDto::class,
     processor: StandardProcessor::class,
+    stateOptions: new Options(entityClass: ActivityEntity::class),
     map: false,
 )]
 #[Delete(
@@ -51,5 +53,6 @@ use App\Validation\RegexValidations;
     requirements: [
         'uuid' => RegexValidations::REGEX_UUID,
     ],
+    shortName: 'activity',
 )]
 final readonly class Activity {}
