@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Dto\User\Response\UserResponseDto;
 use App\Entity\Trait\IdentifiableEntity;
 use App\Repository\ActivityRepository;
 use Doctrine\DBAL\Types\Types;
@@ -11,6 +12,7 @@ use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
+use Symfony\Component\ObjectMapper\Attribute\Map;
 use Symfony\Component\Uid\Uuid;
 
 #[Entity(repositoryClass: ActivityRepository::class)]
