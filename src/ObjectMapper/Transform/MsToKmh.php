@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace App\ObjectMapper\Transform;
 
-use App\Dto\Interface\ResponseDto;
 use Exception;
 use Symfony\Component\ObjectMapper\TransformCallableInterface;
 
 /**
- * @implements TransformCallableInterface<ResponseDto, ResponseDto>
+ * @implements TransformCallableInterface<object, object>
  */
 final readonly class MsToKmh implements TransformCallableInterface
 {
