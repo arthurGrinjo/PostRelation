@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\ObjectMapper\Transform;
 
-use App\ApiResource\User as UserResource;
+use App\ApiResource\User\Response\UserResponseDto as UserResource;
 use App\Entity\User as UserEntity;
 use App\Repository\UserRepository;
 use Symfony\Component\ObjectMapper\Exception\MappingTransformException;

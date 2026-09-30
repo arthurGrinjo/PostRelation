@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\ApiResource;
+namespace App\ApiResource\User\Request;
 
 use ApiPlatform\Doctrine\Orm\State\Options;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\Post;
+use App\ApiResource\Interface\RequestDto;
 use App\Entity\User as UserEntity;
 use Symfony\Component\ObjectMapper\Attribute\Map;
 use Symfony\Component\Uid\Uuid;
@@ -15,12 +16,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[Post(
     uriTemplate: 'users',
     shortName: 'user',
-    itemUriTemplate: 'users/{uuid}',
     stateOptions: new Options(entityClass: UserEntity::class),
+    itemUriTemplate: 'users/{uuid}',
 )]
-#[Map(target: UserEntity::class)]
-#[Map(source: UserEntity::class)]
-final class Registration
+#[Map(target: UserEntity::class, source: UserEntity::class)]
+final class UserRequestDto implements RequestDto
 {
     #[ApiProperty(writable: false, identifier: true)]
     public ?Uuid $uuid = null;

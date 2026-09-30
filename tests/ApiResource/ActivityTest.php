@@ -3,7 +3,7 @@
 namespace ApiResource;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
-use App\ApiResource\ActivityListItem;
+use App\ApiResource\Activity\Response\ActivityCollectionResponseDto;
 use App\Factory\ActivityFactory;
 use App\Factory\UserFactory;
 use Symfony\Component\Uid\Uuid;
@@ -54,7 +54,7 @@ class ActivityTest extends ApiTestCase
         ]);
         $this->assertCount(30, $response->toArray()['member']);
         $this->assertMatchesRegularExpression('#^/api/users/[0-9a-f-]{36}$#', $response->toArray()['member'][0]['user']);
-        $this->assertMatchesResourceCollectionJsonSchema(ActivityListItem::class);
+        $this->assertMatchesResourceCollectionJsonSchema(ActivityCollectionResponseDto::class);
     }
 
     /**
@@ -84,7 +84,7 @@ class ActivityTest extends ApiTestCase
         $this->assertJsonContains([
             '@context' => '/api/contexts/activity',
             '@id' => $item,
-            '@type' => 'Activity',
+            '@type' => 'ActivityResponseDto',
         ]);
     }
 
@@ -112,11 +112,11 @@ class ActivityTest extends ApiTestCase
         $this->assertJsonContains([
             '@context' => '/api/contexts/activity',
             '@id' => $item['@id'],
-            '@type' => 'Activity',
+            '@type' => 'ActivityResponseDto',
             'name' => 'Nieuwe activiteit',
             'user' => [
                 '@id' => '/api/users/' . $user->getUuid(),
-                '@type' => 'User',
+                '@type' => 'UserResponseDto',
                 'email' => $user->getEmail(),
                 'first_name' => $user->getFirstName(),
                 'last_name' => $user->getLastName(),

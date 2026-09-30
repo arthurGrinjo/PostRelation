@@ -3,7 +3,7 @@
 namespace ApiResource;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
-use App\ApiResource\UserListItem;
+use App\ApiResource\User\Response\UserCollectionResponseDto;
 use App\Factory\UserFactory;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
@@ -43,7 +43,7 @@ class UserTest extends ApiTestCase
             'totalItems' => 5,
         ]);
         $this->assertCount(5, $response->toArray()['member']);
-        $this->assertMatchesResourceCollectionJsonSchema(UserListItem::class);
+        $this->assertMatchesResourceCollectionJsonSchema(UserCollectionResponseDto::class);
     }
 
     /**
@@ -72,7 +72,7 @@ class UserTest extends ApiTestCase
         $this->assertJsonContains([
             '@context' => '/api/contexts/user',
             '@id' => $item,
-            '@type' => 'User',
+            '@type' => 'UserResponseDto',
         ]);
     }
 
@@ -107,6 +107,7 @@ class UserTest extends ApiTestCase
 
     public function testCreateUserReturnsUserIriWithoutPassword(): void
     {
+        /** Arrange/Act */
         $response = static::createClient()->request('POST', self::END_POINT, ['json' => [
             'email' => 'registered@domain.com',
             'first_name' => 'Firstname',
@@ -114,6 +115,7 @@ class UserTest extends ApiTestCase
             'password' => 'Test123!',
         ]]);
 
+        /** Assert */
         $this->assertResponseStatusCodeSame(201);
         $data = $response->toArray();
         $user = UserFactory::repository()->findOneBy(['email' => 'registered@domain.com']);
