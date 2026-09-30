@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\ObjectMapper\Transform;
 
-use App\Dto\Interface\ResponseDto;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Exception;
@@ -12,7 +11,7 @@ use InvalidArgumentException;
 use Symfony\Component\ObjectMapper\TransformCallableInterface;
 
 /**
- * @implements TransformCallableInterface<ResponseDto, ResponseDto>
+ * @implements TransformCallableInterface<object, object>
  */
 final readonly class StringToDateTimeImmutable implements TransformCallableInterface
 {

@@ -3,9 +3,10 @@
 namespace ApiResource;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
-use App\ApiResource\Activity;
+use App\ApiResource\ActivityListItem;
 use App\Factory\ActivityFactory;
 use App\Factory\UserFactory;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
@@ -52,7 +53,8 @@ class ActivityTest extends ApiTestCase
             ]
         ]);
         $this->assertCount(30, $response->toArray()['member']);
-        $this->assertMatchesResourceCollectionJsonSchema(Activity::class);
+        $this->assertMatchesRegularExpression('#^/api/users/[0-9a-f-]{36}$#', $response->toArray()['member'][0]['user']);
+        $this->assertMatchesResourceCollectionJsonSchema(ActivityListItem::class);
     }
 
     /**
@@ -82,7 +84,7 @@ class ActivityTest extends ApiTestCase
         $this->assertJsonContains([
             '@context' => '/api/contexts/activity',
             '@id' => $item,
-            '@type' => 'activity',
+            '@type' => 'Activity',
         ]);
     }
 
@@ -110,15 +112,51 @@ class ActivityTest extends ApiTestCase
         $this->assertJsonContains([
             '@context' => '/api/contexts/activity',
             '@id' => $item['@id'],
-            '@type' => 'activity',
+            '@type' => 'Activity',
             'name' => 'Nieuwe activiteit',
             'user' => [
                 '@id' => '/api/users/' . $user->getUuid(),
-                '@type' => 'user',
+                '@type' => 'User',
                 'email' => $user->getEmail(),
                 'first_name' => $user->getFirstName(),
                 'last_name' => $user->getLastName(),
             ]
         ]);
+    }
+
+    public function testCreateActivityWithUserIriPersistsRelation(): void
+    {
+        $user = UserFactory::createOne();
+        $userIri = '/api/users/' . $user->getUuid()->toString();
+
+        $response = static::createClient()->request('POST', self::END_POINT, ['json' => [
+            'name' => 'Activity with IRI',
+            'user' => $userIri,
+        ]]);
+
+        $this->assertResponseStatusCodeSame(201);
+        $this->assertJsonContains([
+            'name' => 'Activity with IRI',
+            'user' => [
+                '@id' => $userIri,
+                'uuid' => $user->getUuid()->toString(),
+            ],
+        ]);
+
+        $activity = ActivityFactory::repository()->findOneBy(['name' => 'Activity with IRI']);
+        $this->assertNotNull($activity);
+        $this->assertTrue($user->getUuid()->equals($activity->getUser()->getUuid()));
+        $this->assertSame('/api/activities/' . $activity->getUuid()->toString(), $response->toArray()['@id']);
+    }
+
+    public function testCreateActivityWithUnknownUserIri(): void
+    {
+        static::createClient()->request('POST', self::END_POINT, ['json' => [
+            'name' => 'Activity with unknown user',
+            'user' => '/api/users/' . Uuid::v6()->toString(),
+        ]]);
+
+        $this->assertResponseStatusCodeSame(400);
+        ActivityFactory::repository()->assert()->count(0);
     }
 }
