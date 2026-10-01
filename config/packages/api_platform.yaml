@@ -1,5 +1,5 @@
 api_platform:
-    title: ClubCyclist
+    title: PostRelation
     version: 1.0.0
     defaults:
         stateless: true

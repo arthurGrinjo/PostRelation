@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Dto\Activity\Response;
 
 use ApiPlatform\Metadata\ApiProperty;
-use ApiPlatform\Metadata\ApiResource;
-use App\ApiResource\Activity;
 use App\Dto\Interface\ResponseDto;
 use App\Dto\User\Response\UserResponseDto;
 use App\Entity\Activity as ActivityEntity;
@@ -14,10 +12,6 @@ use Symfony\Component\ObjectMapper\Attribute\Map;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ApiResource(
-    shortName: 'activity',
-    operations: [],
-)]
 #[Map(source: ActivityEntity::class)]
 final readonly class ActivityResponseDto implements ResponseDto
 {

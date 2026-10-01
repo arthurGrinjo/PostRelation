@@ -20,18 +20,17 @@ use App\Entity\User as UserEntity;
 use App\Processor\StandardProcessor;
 use App\Validation\RegexValidations;
 
-#[ApiResource(
-    shortName: 'user',
-    stateOptions: new Options(entityClass: UserEntity::class),
-)]
 #[GetCollection(
     uriTemplate: 'users',
+    shortName: 'user',
     output: UserCollectionResponseDto::class,
+    stateOptions: new Options(entityClass: UserEntity::class),
     parameters: [
         'email' => new QueryParameter(filter: new PartialSearchFilter(), property: 'email'),
         'first_name' => new QueryParameter(filter: new PartialSearchFilter(), property: 'firstName'),
         'last_name' => new QueryParameter(filter: new PartialSearchFilter(), property: 'lastName'),
     ],
+    itemUriTemplate: 'users/{uuid}',
 )]
 #[Get(
     uriTemplate: 'users/{uuid}',
@@ -41,13 +40,16 @@ use App\Validation\RegexValidations;
     requirements: [
         'uuid' => RegexValidations::REGEX_UUID,
     ],
+    shortName: 'user',
     output: UserResponseDto::class,
 )]
 #[Post(
     uriTemplate: 'users',
+    shortName: 'user',
     input: UserRequestDto::class,
     output: UserResponseDto::class,
     processor: StandardProcessor::class,
+    itemUriTemplate: 'users/{uuid}',
     map: false,
 )]
 //#[Put(
@@ -63,13 +65,13 @@ use App\Validation\RegexValidations;
 //    processor: StandardProcessor::class,
 //    map: false,
 //)]
-#[Delete(
-    uriTemplate: 'users/{uuid}',
-    uriVariables: [
-        'uuid' => new Link(fromClass: UserEntity::class, identifiers: ['uuid']),
-    ],
-    requirements: [
-        'uuid' => RegexValidations::REGEX_UUID,
-    ],
-)]
+//#[Delete(
+//    uriTemplate: 'users/{uuid}',
+//    uriVariables: [
+//        'uuid' => new Link(fromClass: UserEntity::class, identifiers: ['uuid']),
+//    ],
+//    requirements: [
+//        'uuid' => RegexValidations::REGEX_UUID,
+//    ],
+//)]
 final readonly class User {}

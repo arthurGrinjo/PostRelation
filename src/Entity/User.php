@@ -4,23 +4,16 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use ApiPlatform\Doctrine\Orm\State\Options;
-use ApiPlatform\Metadata\ApiResource;
-use App\Dto\Interface\ResponseDto;
-use App\Dto\User\Response\UserResponseDto;
 use App\Entity\Enum\UserRole;
 use App\Entity\Trait\IdentifiableEntity;
 use App\Repository\UserRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Symfony\Component\ObjectMapper\Attribute\Map;
-use Symfony\Component\ObjectMapper\Condition\TargetClass;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Uid\Uuid;
 
 #[Entity(repositoryClass: UserRepository::class)]
-#[Map(target: UserResponseDto::class, if: new TargetClass(ResponseDto::class))]
 class User implements EntityInterface, PasswordAuthenticatedUserInterface
 {
     use IdentifiableEntity;

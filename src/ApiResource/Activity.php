@@ -18,14 +18,13 @@ use App\Entity\Activity as ActivityEntity;
 use App\Processor\StandardProcessor;
 use App\Validation\RegexValidations;
 
-#[ApiResource(
-    shortName: 'activity',
-    stateOptions: new Options(entityClass: ActivityEntity::class),
-)]
 #[GetCollection(
     uriTemplate: 'activities',
+    shortName: 'activity',
     input: ActivityEntity::class,
     output: ActivityCollectionResponseDto::class,
+    stateOptions: new Options(entityClass: ActivityEntity::class),
+    itemUriTemplate: 'activities',
 )]
 #[Get(
     uriTemplate: 'activities/{uuid}',
@@ -35,13 +34,17 @@ use App\Validation\RegexValidations;
     requirements: [
         'uuid' => RegexValidations::REGEX_UUID,
     ],
+    shortName: 'activity',
     output: ActivityResponseDto::class,
+    stateOptions: new Options(entityClass: ActivityEntity::class),
 )]
 #[Post(
     uriTemplate: 'activities',
+    shortName: 'activity',
     input: ActivityRequestDto::class,
     output: ActivityResponseDto::class,
     processor: StandardProcessor::class,
+    itemUriTemplate: 'activities/{uuid}',
     map: false,
 )]
 #[Delete(
@@ -52,5 +55,6 @@ use App\Validation\RegexValidations;
     requirements: [
         'uuid' => RegexValidations::REGEX_UUID,
     ],
+    shortName: 'activity',
 )]
 final readonly class Activity {}
