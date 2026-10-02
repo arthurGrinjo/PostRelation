@@ -8,6 +8,7 @@ use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use App\Dto\Interface\ResponseDto;
 use App\Entity\User as UserEntity;
+use App\ObjectMapper\Transform\UserResourceToEntity;
 use Symfony\Component\ObjectMapper\Attribute\Map;
 use Symfony\Component\Serializer\Attribute\SerializedName;
 use Symfony\Component\Uid\Uuid;
@@ -18,6 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [],
 )]
 #[Map(source: UserEntity::class)]
+#[Map(target: UserEntity::class, transform: UserResourceToEntity::class)]
 class UserResponseDto implements ResponseDto
 {
     public function __construct(

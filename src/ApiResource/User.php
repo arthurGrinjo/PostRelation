@@ -72,5 +72,6 @@ use App\Validation\RegexValidations;
     requirements: [
         'uuid' => RegexValidations::REGEX_UUID,
     ],
+    shortName: 'user',
 )]
 final readonly class User {}

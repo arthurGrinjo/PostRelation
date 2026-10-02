@@ -6,16 +6,23 @@ namespace App\Dto\Activity\Request;
 
 use App\Dto\Interface\RequestDto;
 use App\Entity\Activity;
-use App\Validation\RegexValidations;
+use App\Entity\User;
 use Symfony\Component\ObjectMapper\Attribute\Map;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[Map(target: Activity::class, source: Activity::class)]
+#[Map(target: Activity::class)]
 class ActivityRequestDto implements RequestDto
 {
     #[Assert\Length(min: 4, max: 128)]
     public string $name;
 
-     #[Assert\Regex(RegexValidations::IRI)]
-    public string $user;
+    #[Assert\NotNull]
+    #[Map(target: User::class)]
+    public ?User $user;
+
+    public function setUser(User $user): self
+    {
+        $this->user = $user;
+        return $this;
+    }
 }
