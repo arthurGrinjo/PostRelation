@@ -18,8 +18,8 @@ use Symfony\Component\Validator\Constraints as Assert;
     shortName: 'user',
     operations: [],
 )]
-#[Map(source: UserEntity::class)]
 #[Map(target: UserEntity::class, transform: UserResourceToEntity::class)]
+#[Map(source: UserEntity::class)]
 class UserResponseDto implements ResponseDto
 {
     public function __construct(

@@ -16,6 +16,7 @@ use App\Dto\Activity\Response\ActivityResponseDto;
 use App\Entity\Activity as ActivityEntity;
 use App\Processor\StandardProcessor;
 use App\Validation\RegexValidations;
+use Symfony\Component\ObjectMapper\Attribute\Map;
 
 #[GetCollection(
     uriTemplate: 'activities',
@@ -55,4 +56,5 @@ use App\Validation\RegexValidations;
     ],
     shortName: 'activity',
 )]
+#[Map(source: ActivityEntity::class)]
 final readonly class Activity {}

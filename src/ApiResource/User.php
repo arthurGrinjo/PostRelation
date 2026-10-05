@@ -6,6 +6,7 @@ namespace App\ApiResource;
 
 use ApiPlatform\Doctrine\Orm\Filter\PartialSearchFilter;
 use ApiPlatform\Doctrine\Orm\State\Options;
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -18,6 +19,8 @@ use App\Dto\User\Response\UserResponseDto;
 use App\Entity\User as UserEntity;
 use App\Processor\StandardProcessor;
 use App\Validation\RegexValidations;
+use Symfony\Component\ObjectMapper\Attribute\Map;
+use Symfony\Component\Uid\Uuid;
 
 #[GetCollection(
     uriTemplate: 'users',
@@ -74,4 +77,8 @@ use App\Validation\RegexValidations;
     ],
     shortName: 'user',
 )]
-final readonly class User {}
+#[Map(source: UserEntity::class)]
+final readonly class User {
+    #[ApiProperty(identifier: true)]
+    public Uuid $uuid;
+}

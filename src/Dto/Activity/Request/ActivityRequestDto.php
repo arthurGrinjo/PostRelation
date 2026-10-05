@@ -10,7 +10,7 @@ use App\Entity\User;
 use Symfony\Component\ObjectMapper\Attribute\Map;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[Map(target: Activity::class)]
+#[Map(target: Activity::class, source: Activity::class)]
 class ActivityRequestDto implements RequestDto
 {
     #[Assert\Length(min: 4, max: 128)]
