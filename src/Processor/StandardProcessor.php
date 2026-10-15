@@ -127,21 +127,6 @@ readonly class StandardProcessor extends Validator implements ProcessorInterface
         foreach (get_object_vars($data) as $key => $value) {
             if (
                 is_string($value)
-                && preg_match(RegexValidations::IRI, $value, $uri)
-            ) {
-                /** @var UriCatalog $objectClass */
-                $objectClass = UriCatalog::{strtoupper($uri[1])};
-                $object = $this->entityManager->getRepository($objectClass->value)->findOneBy(['uuid' => $uri[2]]);
-
-                $source->$key = ($object instanceof EntityInterface)
-                    ? $object
-                    : throw new EntityNotFoundException($value)
-                ;
-                continue;
-            }
-
-            if (
-                is_string($value)
                 && preg_match(RegexValidations::DATETIME, $value)
             ) {
                 $source->$key = new DateTimeImmutable($value);

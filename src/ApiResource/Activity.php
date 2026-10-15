@@ -42,7 +42,7 @@ use App\Validation\RegexValidations;
     output: ActivityResponseDto::class,
     processor: StandardProcessor::class,
     stateOptions: new Options(entityClass: ActivityEntity::class),
-    map: false,
+    map: true,
 )]
 #[Delete(
     uriTemplate: 'activities/{uuid}',
