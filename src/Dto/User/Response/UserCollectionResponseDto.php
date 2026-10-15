@@ -6,10 +6,10 @@ namespace App\Dto\User\Response;
 
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
+use App\ApiResource\User;
 use App\Dto\Interface\ResponseDto;
 use App\Entity\User as UserEntity;
 use Symfony\Component\ObjectMapper\Attribute\Map;
-use Symfony\Component\Serializer\Attribute\SerializedName;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -23,16 +23,15 @@ final readonly class UserCollectionResponseDto implements ResponseDto
 
     public function __construct(
         #[ApiProperty(readable: false, identifier: true)]
-        #[Assert\NotBlank]
         public Uuid $uuid,
 
         #[Assert\NotBlank]
         public string $email,
 
-        #[SerializedName('first_name'), Assert\NotBlank]
+        #[Assert\NotBlank]
         public string $firstName,
 
-        #[SerializedName('last_name'), Assert\NotBlank]
+        #[Assert\NotBlank]
         public string $lastName,
     ) {}
 }

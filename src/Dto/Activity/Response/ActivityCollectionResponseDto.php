@@ -6,16 +6,16 @@ namespace App\Dto\Activity\Response;
 
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
+use App\ApiResource\Activity;
 use App\Dto\Interface\ResponseDto;
 use App\Dto\User\Response\UserResponseDto;
 use App\Entity\Activity as ActivityEntity;
-use App\Entity\User;
 use Symfony\Component\ObjectMapper\Attribute\Map;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
-    shortName: 'activity',
+    shortName: Activity::SHORT_NAME,
     operations: [],
 )]
 #[Map(source: ActivityEntity::class)]
@@ -23,7 +23,6 @@ final readonly class ActivityCollectionResponseDto implements ResponseDto
 {
     public function __construct(
         #[ApiProperty(readable: false, identifier: true)]
-        #[Assert\NotBlank]
         public Uuid $uuid,
 
         #[Assert\NotBlank]
@@ -31,7 +30,6 @@ final readonly class ActivityCollectionResponseDto implements ResponseDto
 
         #[Assert\NotBlank]
         #[ApiProperty(readableLink: false)]
-//        #[Map(source: 'User')]
         public UserResponseDto $user,
     ) {}
 }

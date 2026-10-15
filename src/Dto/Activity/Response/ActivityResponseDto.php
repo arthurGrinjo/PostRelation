@@ -15,7 +15,7 @@ use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
-    shortName: 'activity',
+    shortName: Activity::SHORT_NAME,
     operations: [],
 )]
 #[Map(source: ActivityEntity::class)]
@@ -23,13 +23,11 @@ final readonly class ActivityResponseDto implements ResponseDto
 {
     public function __construct(
         #[ApiProperty(readable: false, identifier: true)]
-        #[Assert\NotBlank]
         public Uuid $uuid,
 
         #[Assert\NotBlank]
         public string $name,
 
-        #[Assert\NotBlank]
         #[ApiProperty(readableLink: true)]
         public UserResponseDto $user,
     ) {}

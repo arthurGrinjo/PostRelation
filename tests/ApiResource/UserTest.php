@@ -57,21 +57,17 @@ class UserTest extends ApiTestCase
         $client = static::createClient();
 
         /** Arrange  */
-        UserFactory::createOne();
+        $userIri = sprintf('/%s/%s', self::END_POINT, UserFactory::createOne()->getUuid()->toString());
 
         /** Act */
-        $item = $client
-            ->request('GET', self::END_POINT)
-            ->toArray()['member'][0]['@id']
-        ;
-        $client->request('GET', $item);
+        $client->request('GET', $userIri);
 
         /** Assert */
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', self::RESPONSE_HEADER);
         $this->assertJsonContains([
             '@context' => '/api/contexts/user',
-            '@id' => $item,
+            '@id' => $userIri,
             '@type' => 'user',
         ]);
     }
@@ -86,7 +82,7 @@ class UserTest extends ApiTestCase
     public function testCreateUserItem(): void
     {
         /** Arrange/Act */
-        $item = static::createClient()->request('POST', self::END_POINT, ['json' => [
+        $user = static::createClient()->request('POST', self::END_POINT, ['json' => [
             'email' => 'new_user@domain.com',
             'first_name' => 'Firstname',
             'last_name' => 'Lastname',

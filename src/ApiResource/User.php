@@ -6,12 +6,12 @@ namespace App\ApiResource;
 
 use ApiPlatform\Doctrine\Orm\Filter\PartialSearchFilter;
 use ApiPlatform\Doctrine\Orm\State\Options;
-use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\QueryParameter;
 use App\Dto\User\Request\UserRequestDto;
 use App\Dto\User\Response\UserCollectionResponseDto;
@@ -19,12 +19,10 @@ use App\Dto\User\Response\UserResponseDto;
 use App\Entity\User as UserEntity;
 use App\Processor\StandardProcessor;
 use App\Validation\RegexValidations;
-use Symfony\Component\ObjectMapper\Attribute\Map;
-use Symfony\Component\Uid\Uuid;
 
 #[GetCollection(
     uriTemplate: 'users',
-    shortName: 'user',
+    shortName: self::SHORT_NAME,
     output: UserCollectionResponseDto::class,
     stateOptions: new Options(entityClass: UserEntity::class),
     parameters: [
@@ -41,32 +39,34 @@ use Symfony\Component\Uid\Uuid;
     requirements: [
         'uuid' => RegexValidations::REGEX_UUID,
     ],
-    shortName: 'user',
+    shortName: self::SHORT_NAME,
     output: UserResponseDto::class,
     stateOptions: new Options(entityClass: UserEntity::class),
 )]
 #[Post(
     uriTemplate: 'users',
-    shortName: 'user',
+    shortName: self::SHORT_NAME,
     input: UserRequestDto::class,
     output: UserResponseDto::class,
     processor: StandardProcessor::class,
     stateOptions: new Options(entityClass: UserEntity::class),
     map: false,
 )]
-//#[Put(
-//    uriTemplate: self::ITEM_URI,
-//    uriVariables: [
-//        'uuid' => new Link(fromClass: UserEntity::class, identifiers: ['uuid']),
-//    ],
-//    requirements: [
-//        'uuid' => RegexValidations::REGEX_UUID,
-//    ],
-//    input: UserRequestPutDto::class,
-//    output: UserResponseDto::class,
-//    processor: StandardProcessor::class,
-//    map: false,
-//)]
+#[Put(
+    uriTemplate: 'users/{uuid}',
+    uriVariables: [
+        'uuid' => new Link(fromClass: UserEntity::class, identifiers: ['uuid']),
+    ],
+    requirements: [
+        'uuid' => RegexValidations::REGEX_UUID,
+    ],
+    shortName: self::SHORT_NAME,
+    input: UserResponseDto::class,
+    output: UserResponseDto::class,
+    processor: StandardProcessor::class,
+    stateOptions: new Options(entityClass: UserEntity::class),
+    map: false,
+)]
 #[Delete(
     uriTemplate: 'users/{uuid}',
     uriVariables: [
@@ -75,10 +75,8 @@ use Symfony\Component\Uid\Uuid;
     requirements: [
         'uuid' => RegexValidations::REGEX_UUID,
     ],
-    shortName: 'user',
+    shortName: self::SHORT_NAME,
 )]
-#[Map(source: UserEntity::class)]
 final readonly class User {
-    #[ApiProperty(identifier: true)]
-    public Uuid $uuid;
+    final public const string SHORT_NAME = 'user';
 }

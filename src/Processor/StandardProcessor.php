@@ -13,8 +13,11 @@ use App\Dto\Interface\RequestDto;
 use App\Dto\Interface\ResponseDto;
 use App\Entity\EntityInterface;
 use App\Entity\Enum\UriCatalog;
+use App\Validation\RegexValidations;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
+use Exception;
 use RuntimeException;
 use stdClass;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -32,11 +35,11 @@ readonly class StandardProcessor extends Validator implements ProcessorInterface
      * @param ProcessorInterface<EntityInterface, ResponseDto> $persistProcessor
      */
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private ObjectMapperInterface $objectMapper,
+        protected EntityManagerInterface $entityManager,
+        private ObjectMapperInterface    $objectMapper,
         #[Autowire(service: 'api_platform.doctrine.orm.state.persist_processor')]
-        private ProcessorInterface $persistProcessor,
-        protected ValidatorInterface $validator,
+        private ProcessorInterface       $persistProcessor,
+        protected ValidatorInterface     $validator,
     ) {
         parent::__construct($validator);
     }
@@ -65,6 +68,8 @@ readonly class StandardProcessor extends Validator implements ProcessorInterface
             $targetObject = $this->getTargetObject($operation, $entityClass, $uriVariables);
             $sourceObject = $this->getSourceObject($data);
 
+            $this->specificProcess(object: $sourceObject);
+
             $this->objectMapper->map(
                 source: $sourceObject,
                 target: $targetObject,
@@ -87,6 +92,10 @@ readonly class StandardProcessor extends Validator implements ProcessorInterface
         throw new RuntimeException('Cannot process this request.', Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
+    /**
+     * @param class-string $entityClass
+     * @param array<string, mixed> $uriVariables
+     */
     private function getTargetObject(
         Operation $operation,
         string $entityClass,
@@ -103,8 +112,11 @@ readonly class StandardProcessor extends Validator implements ProcessorInterface
             : throw new EntityNotFoundException($entityClass);
     }
 
+    /**
+     * @throws Exception
+     */
     private function getSourceObject(
-        mixed $data,
+        object $data,
     ): StdClass
     {
         /**
@@ -113,25 +125,37 @@ readonly class StandardProcessor extends Validator implements ProcessorInterface
          */
         $source = (new stdClass());
         foreach (get_object_vars($data) as $key => $value) {
-            if (preg_match(
-                '/^\/api\/([a-zA-Z_.~-]+)\/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})$/',
-                $value,
-                $uri,
-            )) {
+            if (
+                is_string($value)
+                && preg_match(RegexValidations::IRI, $value, $uri)
+            ) {
+                /** @var UriCatalog $objectClass */
                 $objectClass = UriCatalog::{strtoupper($uri[1])};
                 $object = $this->entityManager->getRepository($objectClass->value)->findOneBy(['uuid' => $uri[2]]);
 
-                $value =  ($object instanceof EntityInterface)
+                $source->$key = ($object instanceof EntityInterface)
                     ? $object
-                    : throw new EntityNotFoundException($objectClass, $value)
+                    : throw new EntityNotFoundException($value)
                 ;
+                continue;
             }
+
+            if (
+                is_string($value)
+                && preg_match(RegexValidations::DATETIME, $value)
+            ) {
+                $source->$key = new DateTimeImmutable($value);
+                continue;
+            }
+
             $source->$key = $value;
         }
         return $source;
     }
 
-    private function createResponse(
+    public function specificProcess(object $object): void {}
+
+    public function createResponse(
         Operation $operation,
         EntityInterface $entity,
         string $entityClass,
@@ -152,6 +176,6 @@ readonly class StandardProcessor extends Validator implements ProcessorInterface
         return ($responseDto instanceof ResponseDto)
             ? $responseDto
             : throw new RuntimeException(sprintf('Invalid response dto: %s', $entityClass))
-        ;
+            ;
     }
 }

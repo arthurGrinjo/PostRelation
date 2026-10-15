@@ -29,7 +29,7 @@ class ActivityTest extends ApiTestCase
     public function testGetActivityCollection(): void
     {
         /** Arrange */
-        UserFactory::createMany(5);
+        UserFactory::createOne();
         ActivityFactory::createMany(60);
 
         /** Act */
@@ -67,21 +67,21 @@ class ActivityTest extends ApiTestCase
 
         /** Arrange  */
         UserFactory::createOne();
-        ActivityFactory::createOne();
+        $activityIri = sprintf(
+            '/%s/%s',
+            self::END_POINT,
+            ActivityFactory::createOne()->getUuid()->toString()
+        );
 
         /** Act */
-        $item = $client
-            ->request('GET', self::END_POINT)
-            ->toArray()['member'][0]['@id']
-        ;
-        $client->request('GET', $item);
+        $client->request('GET', $activityIri);
 
         /** Assert */
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', self::RESPONSE_HEADER);
         $this->assertJsonContains([
             '@context' => '/api/contexts/activity',
-            '@id' => $item,
+            '@id' => $activityIri,
             '@type' => 'activity',
         ]);
     }
@@ -100,7 +100,7 @@ class ActivityTest extends ApiTestCase
 
         /** Act */
         $item = static::createClient()->request('POST', self::END_POINT, ['json' => [
-            'name' => 'Nieuwe activiteit',
+            'name' => 'New activity',
             'user' => '/api/users/' . $user->getUuid()->toString(),
         ]])->toArray();
 
@@ -111,7 +111,7 @@ class ActivityTest extends ApiTestCase
             '@context' => '/api/contexts/activity',
             '@id' => $item['@id'],
             '@type' => 'activity',
-            'name' => 'Nieuwe activiteit',
+            'name' => 'New activity',
             'user' => [
                 '@id' => '/api/users/' . $user->getUuid(),
                 '@type' => 'user',

@@ -16,12 +16,10 @@ use App\Dto\Activity\Response\ActivityResponseDto;
 use App\Entity\Activity as ActivityEntity;
 use App\Processor\StandardProcessor;
 use App\Validation\RegexValidations;
-use Symfony\Component\ObjectMapper\Attribute\Map;
 
 #[GetCollection(
     uriTemplate: 'activities',
-    shortName: 'activity',
-    input: ActivityEntity::class,
+    shortName: self::SHORT_NAME,
     output: ActivityCollectionResponseDto::class,
     stateOptions: new Options(entityClass: ActivityEntity::class),
 )]
@@ -33,13 +31,13 @@ use Symfony\Component\ObjectMapper\Attribute\Map;
     requirements: [
         'uuid' => RegexValidations::REGEX_UUID,
     ],
-    shortName: 'activity',
+    shortName: self::SHORT_NAME,
     output: ActivityResponseDto::class,
     stateOptions: new Options(entityClass: ActivityEntity::class),
 )]
 #[Post(
     uriTemplate: 'activities',
-    shortName: 'activity',
+    shortName: self::SHORT_NAME,
     input: ActivityRequestDto::class,
     output: ActivityResponseDto::class,
     processor: StandardProcessor::class,
@@ -54,7 +52,8 @@ use Symfony\Component\ObjectMapper\Attribute\Map;
     requirements: [
         'uuid' => RegexValidations::REGEX_UUID,
     ],
-    shortName: 'activity',
+    shortName: self::SHORT_NAME,
 )]
-#[Map(source: ActivityEntity::class)]
-final readonly class Activity {}
+final readonly class Activity {
+    final public const string SHORT_NAME = 'activity';
+}
