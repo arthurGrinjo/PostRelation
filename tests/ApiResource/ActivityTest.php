@@ -99,10 +99,54 @@ class ActivityTest extends ApiTestCase
         $user = UserFactory::createOne();
 
         /** Act */
-        $item = static::createClient()->request('POST', self::END_POINT, ['json' => [
+        $item = static::createClient()->request(
+            method: 'POST',
+            url: sprintf('%s/working', self::END_POINT),
+            options: ['json' => [
+                'name' => 'New activity',
+                'user' => '/api/users/' . $user->getUuid()->toString(),
+            ]
+            ])->toArray();
+
+        /** Assert */
+        $this->assertResponseStatusCodeSame(201);
+        $this->assertResponseHeaderSame('content-type', self::RESPONSE_HEADER);
+        $this->assertJsonContains([
+            '@context' => '/api/contexts/activity',
+            '@id' => $item['@id'],
+            '@type' => 'activity',
             'name' => 'New activity',
-            'user' => '/api/users/' . $user->getUuid()->toString(),
-        ]])->toArray();
+            'user' => [
+                '@id' => '/api/users/' . $user->getUuid(),
+                '@type' => 'user',
+                'email' => $user->getEmail(),
+                'first_name' => $user->getFirstName(),
+                'last_name' => $user->getLastName(),
+            ]
+        ]);
+    }
+
+    /**
+     * @throws RedirectionExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws ClientExceptionInterface
+     * @throws TransportExceptionInterface
+     * @throws ServerExceptionInterface
+     */
+    public function testCreateActivityTestItem(): void
+    {
+        /** Arrange */
+        $user = UserFactory::createOne();
+
+        /** Act */
+        $item = static::createClient()->request(
+            method: 'POST',
+            url: sprintf('%s/test', self::END_POINT),
+            options: ['json' => [
+                'name' => 'New activity',
+                'userIri' => '/api/users/' . $user->getUuid()->toString(),
+            ]
+        ])->toArray();
 
         /** Assert */
         $this->assertResponseStatusCodeSame(201);

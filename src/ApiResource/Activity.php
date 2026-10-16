@@ -11,10 +11,12 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Post;
 use App\Dto\Activity\Request\ActivityRequestDto;
+use App\Dto\Activity\Request\ActivityRequestTestDto;
 use App\Dto\Activity\Response\ActivityCollectionResponseDto;
 use App\Dto\Activity\Response\ActivityResponseDto;
 use App\Entity\Activity as ActivityEntity;
 use App\Processor\StandardProcessor;
+use App\Processor\StandardTestProcessor;
 use App\Validation\RegexValidations;
 
 #[GetCollection(
@@ -36,11 +38,20 @@ use App\Validation\RegexValidations;
     stateOptions: new Options(entityClass: ActivityEntity::class),
 )]
 #[Post(
-    uriTemplate: 'activities',
+    uriTemplate: 'activities/working',
     shortName: self::SHORT_NAME,
     input: ActivityRequestDto::class,
     output: ActivityResponseDto::class,
     processor: StandardProcessor::class,
+    stateOptions: new Options(entityClass: ActivityEntity::class),
+    map: false,
+)]
+#[Post(
+    uriTemplate: 'activities/test',
+    shortName: self::SHORT_NAME,
+    input: ActivityRequestTestDto::class,
+    output: ActivityResponseDto::class,
+    processor: StandardTestProcessor::class,
     stateOptions: new Options(entityClass: ActivityEntity::class),
     map: true,
 )]
